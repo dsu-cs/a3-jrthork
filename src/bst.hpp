@@ -62,8 +62,18 @@ BST<T>::~BST()
 template<class T>
  std::vector<T> * BST<T>::inorder()
 {
-    std::vector<T> *vec = new std::vector<T>;
-
+    	std::vector<T> *vec = new std::vector<T>;
+	int size = get_size();
+	Node<T> *cur = root; 
+	if(cur == NULL)
+	{
+		return vec;
+	}
+	
+		cur->get_left();
+		vec->push_back(cur->get_data());
+		cur->get_right();
+	
     return vec;
 }
 
@@ -71,8 +81,13 @@ template<class T>
 template<class T>
  std::vector<T> * BST<T>::preorder()
 {
-    std::vector<T> *vec = new std::vector<T>;
-    return vec;
+    	std::vector<T> *vec = new std::vector<T>;
+    	Node<T> *cur = root;
+	
+	vec->push_back(cur->get_data());
+	cur->get_left();
+	cur->get_right();
+return vec;
 }
 
 
@@ -80,21 +95,84 @@ template<class T>
  std::vector<T> * BST<T>::postorder()
 {
     std::vector<T> *vec = new std::vector<T>;
-
+	Node<T> *cur = root;
+	cur->get_left();
+	cur->get_right();
+	vec->push_back(cur->get_data());
     return vec;
 }
 
 template<class T>
 void BST<T>::insert(T new_data)
 {
-
+	Node<T> *cur;
+	Node<T> *tmp;
+	if(root == NULL)
+	{
+		root->set_data(new_data);
+	}
+	else 
+	{
+		cur = root;
+		while(cur != NULL)
+		{
+			if(new_data < cur->get_data())
+			{
+				if(cur->get_left() == NULL)
+				{
+					tmp->set_data(new_data);
+					cur->set_left(tmp);
+					cur = NULL;
+					delete(tmp);
+				}
+				else
+				{
+					cur = cur->get_left();
+				}
+			}
+			else
+			{
+				if(cur->get_right() == NULL)
+				{
+					tmp->set_data(new_data);
+					cur->set_right(tmp);
+					cur = NULL;
+					delete(tmp);
+				}
+				else
+				{
+					cur = cur->get_right();
+				}
+			}
+		}
+		
+	}
+		
+	++node_count;
 }
 
 
 template<class T>
 Node<T> *BST<T>::search(T val)
 {
-
+	Node<T> *cur = root;
+	while(cur != NULL)
+	{
+		if(val == cur->get_data())
+		{
+			return cur;
+		}
+		else if(val < cur->get_data())
+		{
+			cur = cur->get_left();
+		}
+		else
+		{
+			cur = cur->get_right();
+		}
+	}
+	return NULL;	
+	
 }
 
 
@@ -102,7 +180,38 @@ Node<T> *BST<T>::search(T val)
 template<class T>
 void BST<T>::remove(T val)
 {
-
+	Node<T> *suc;
+	Node<T> *cur;
+	cur = search(val);
+	Node<T> *tmp;
+	if(cur->get_left() == NULL && cur->get_right() == NULL)
+	{
+		delete(cur);
+	}
+	else if(cur->get_left() != NULL && cur->get_right() == NULL)
+	{
+		tmp->set_left(cur);
+		tmp->set_left(cur->get_left());
+		delete(cur);
+	}
+	else if(cur->get_left() == NULL && cur->get_right() != NULL)
+	{
+		tmp->set_right(cur);
+		tmp->set_right(cur->get_right());
+		delete(cur);
+	}
+	else if(cur->get_left() != NULL && cur->get_right() != NULL)
+	{
+		
+		suc = cur->get_right();
+		while(suc->get_left() != NULL)
+		{
+			suc = suc->get_left();
+		}	
+		tmp = suc;
+		delete(suc);
+		cur = tmp;
+	}	
 }
 
 
@@ -110,5 +219,6 @@ void BST<T>::remove(T val)
 template<class T>
 int BST<T>::get_size()
 {
-
+	int size = node_count;
+	return size;
 }
